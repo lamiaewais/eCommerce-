@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +22,8 @@ import com.example.demo.model.persistence.repositories.UserRepository;
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
-	
-	
+	private final Logger log = LoggerFactory.getLogger(OrderController.class);
+
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -32,20 +34,34 @@ public class OrderController {
 	@PostMapping("/submit/{username}")
 	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
+
 		if(user == null) {
+			log.error("Exception: can not submit order, because, " + username + " not found");
 			return ResponseEntity.notFound().build();
 		}
+
 		UserOrder order = UserOrder.createFromCart(user.getCart());
 		orderRepository.save(order);
+		log.info("Order submitted successfully");
 		return ResponseEntity.ok(order);
 	}
 	
 	@GetMapping("/history/{username}")
 	public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
+
 		if(user == null) {
+			log.error("Exception: can not find orders because, " + username + " not found");
 			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.ok(orderRepository.findByUser(user));
+
+		List<UserOrder> orders = orderRepository.findByUser(user);
+		if (orders.isEmpty()) {
+			log.info("No orders found for " +  username + " user");
+		} else  {
+			log.info("Found " +  orders.size() + " orders for " + username + " user");
+		}
+
+		return ResponseEntity.ok(orders);
 	}
 }
