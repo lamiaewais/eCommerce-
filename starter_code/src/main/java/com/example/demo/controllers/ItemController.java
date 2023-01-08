@@ -31,8 +31,10 @@ public class ItemController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Item> getItemById(@PathVariable Long id) {
 		Optional<Item>  item = itemRepository.findById(id);
+
 		if (!item.isPresent()) {
 			log.error("Exception: no item found with " +  id + " id");
+			return ResponseEntity.notFound().build();
 		}
 
 		log.info("Item with " + id + " id has been retrieved successfully");
@@ -45,10 +47,9 @@ public class ItemController {
 
 		if (items == null || items.isEmpty()) {
 			log.error("Exception: item " + name + " not found");
-			ResponseEntity.notFound().build();
+			return ResponseEntity.notFound().build();
 		}
 
-		assert items != null;
 		log.info("a list of " + name + " item has been retrived successfully ");
 		return ResponseEntity.ok(items);
 			
