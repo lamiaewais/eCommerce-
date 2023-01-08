@@ -8,19 +8,18 @@ import com.example.demo.model.requests.CreateUserRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Objects;
 import java.util.Optional;
+import static com.example.demo.TestUtil.getUser;
 import static org.junit.Assert.*;
 
 public class UserControllerTest {
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
     private final CartRepository cartRepository = Mockito.mock(CartRepository.class);
     private final BCryptPasswordEncoder bCryptPasswordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
-    private final Logger log = Mockito.mock(Logger.class);
     private UserController userController;
 
     @Before
@@ -29,7 +28,6 @@ public class UserControllerTest {
         TestUtil.injectObjects(userController, "userRepository", userRepository);
         TestUtil.injectObjects(userController, "cartRepository", cartRepository);
         TestUtil.injectObjects(userController, "bCryptPasswordEncoder", bCryptPasswordEncoder);
-        TestUtil.injectObjects(userController, "log", log);
     }
 
     @Test
@@ -114,12 +112,4 @@ public class UserControllerTest {
         assertNull(response.getBody());
     }
 
-    private User getUser() {
-        User user = new User();
-        user.setId(1);
-        user.setPassword("PasswordTest");
-        user.setUsername("Lamia");
-
-        return user;
-    }
 }

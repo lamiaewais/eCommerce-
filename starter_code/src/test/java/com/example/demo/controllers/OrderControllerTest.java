@@ -1,28 +1,21 @@
 package com.example.demo.controllers;
 
 import com.example.demo.TestUtil;
-import com.example.demo.model.persistence.Cart;
-import com.example.demo.model.persistence.Item;
-import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.UserOrder;
 import com.example.demo.model.persistence.repositories.OrderRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import static com.example.demo.TestUtil.*;
 import static org.junit.Assert.assertEquals;
 
 public class OrderControllerTest {
-    private final Logger log = LoggerFactory.getLogger(OrderController.class);
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
     private final OrderRepository orderRepository = Mockito.mock(OrderRepository.class);
     private OrderController orderController;
@@ -32,7 +25,6 @@ public class OrderControllerTest {
         orderController = new OrderController();
         TestUtil.injectObjects(orderController, "userRepository", userRepository);
         TestUtil.injectObjects(orderController, "orderRepository", orderRepository);
-        TestUtil.injectObjects(orderController, "log", log);
     }
 
     @Test
@@ -95,35 +87,4 @@ public class OrderControllerTest {
         assertEquals(response.getStatusCode(), HttpStatus.OK);
     }
 
-    private User getUser() {
-        User user = new User();
-        Cart cart = new Cart();
-        user.setId(1);
-        user.setPassword("PasswordTest");
-        user.setUsername("Lamia");
-        user.setCart(cart);
-        cart.addItem(getItem());
-        return user;
-    }
-
-    private List<UserOrder> getOrders() {
-        ArrayList<UserOrder> list = new ArrayList<>();
-        list.add(new UserOrder());
-        list.add(new UserOrder());
-        list.add(new UserOrder());
-
-        return list;
-    }
-
-    private UserOrder getUserOrder() {
-        return new UserOrder();
-    }
-
-    private Item getItem() {
-        Item item = new Item();
-        item.setPrice(new BigDecimal(69));
-        item.setDescription("desc");
-        item.setName("name");
-        return item;
-    }
 }

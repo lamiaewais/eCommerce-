@@ -6,24 +6,21 @@ import com.example.demo.model.persistence.repositories.ItemRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import static com.example.demo.TestUtil.getItem;
 import static org.junit.Assert.assertEquals;
 
 public class ItemControllerTest {
-    private final Logger log = LoggerFactory.getLogger(ItemController.class);
     private final ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
     private ItemController itemController;
 
     @Before
     public void setup() {
         itemController = new ItemController();
-        TestUtil.injectObjects(itemController, "log", log);
         TestUtil.injectObjects(itemController, "itemRepository", itemRepository);
     }
 
@@ -70,12 +67,5 @@ public class ItemControllerTest {
         ResponseEntity<List<Item>> response = itemController.getItems();
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
-    }
-
-    private Item getItem() {
-        Item item = new Item();
-        item.setId(1L);
-        item.setName("Name");
-        return item;
     }
 }
