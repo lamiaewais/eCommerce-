@@ -36,9 +36,16 @@ public class UserController {
 
 	@GetMapping("/id/{id}")
 	public ResponseEntity<User> findById(@PathVariable Long id) {
-		return ResponseEntity.of(userRepository.findById(id));
+		Optional<User> user = userRepository.findById(id);
+
+		if (!user.isPresent()) {
+			log.error("Exception: " + id + " not found");
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.of(user);
 	}
-	
+
 	@GetMapping("/{username}")
 	public ResponseEntity<User> findByUserName(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
